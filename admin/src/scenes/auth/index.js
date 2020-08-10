@@ -5,8 +5,6 @@ import Reset from "./reset";
 import Forgot from "./forgot";
 import Login from "./login";
 
-// import "./auth.less";
-
 export default () => {
   return (
     <Switch>
