@@ -61,21 +61,26 @@ router.get("/", passport.authenticate("admin", { session: false }), async (req, 
 });
 
 //@check
-router.put("/", passport.authenticate("user", { session: false }), upload.any(), async (req, res) => {
+router.put("/image", passport.authenticate("user", { session: false }), upload.any(), async (req, res) => {
   try {
     let _id = req.user.role === "admin" ? req.query.user_id || req.user._id : req.user._id;
     const files = req.files || [];
-    const body = req.body.body ? JSON.parse(req.body.body) : req.body;
-    const arr = [];
 
-    if (files.length) {
-      arr.push(uploadToS3FromBuffer(`app/users/${_id}/${files[0].originalname}`, files[0].buffer));
-    }
+    await uploadToS3FromBuffer(`app/users/${_id}/${files[0].originalname}`, files[0].buffer);
 
-    arr.push(UserObject.findOneAndUpdate({ _id }, body, { upsert: true, new: true }));
+    res.status(200).send({ ok: true });
+  } catch (error) {
+    capture(error);
+    res.status(500).send({ ok: false, code: SERVER_ERROR, error });
+  }
+});
 
-    const results = await Promise.all(arr);
-    const user = results[results.length - 1];
+//@check
+router.put("/", passport.authenticate("user", { session: false }), async (req, res) => {
+  try {
+    let _id = req.user.role === "admin" ? req.query.user_id || req.user._id : req.user._id;
+
+    const user = await UserObject.findOneAndUpdate({ _id }, req.body, { new: true });
 
     res.status(200).send({ ok: true, user });
   } catch (error) {

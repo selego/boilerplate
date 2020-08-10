@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import { toastr } from "react-redux-toastr";
 
 import api from "../../services/api";
+import LoadingButton from "../../components/loadingButton";
 
 const S3PREFIX = "https://datadvise.s3.eu-west-3.amazonaws.com/app/users";
 
@@ -51,7 +52,7 @@ export default () => {
               }
             }}
           >
-            {({ values, handleChange, handleSubmit }) => (
+            {({ values, handleChange, handleSubmit, isSubmitting }) => (
               <React.Fragment>
                 <Row>
                   <Col md={6}>
@@ -63,12 +64,19 @@ export default () => {
                   <Col md={6}>
                     <FormGroup>
                       <Label>Email</Label>
-                      <Input name="email" value={values.email} onChange={handleChange} />
+                      <Input disabled name="email" value={values.email} onChange={handleChange} />
                     </FormGroup>
                   </Col>
                   <Col md={6}>
                     <FormGroup>
-                      <ImageInput name="avatar" onChange={handleChange} title="Avatar" value={values.avatar} url={`${S3PREFIX}/${user._id}`} route={`/user`} />
+                      <ImageInput
+                        name="avatar"
+                        onChange={handleChange}
+                        title="Avatar"
+                        value={values.avatar}
+                        url={`${S3PREFIX}/${user._id}`}
+                        route={`/user/image?user_id=${user._id}`}
+                      />
                     </FormGroup>
                   </Col>
                   <Col md={6}>
@@ -81,9 +89,9 @@ export default () => {
                     </FormGroup>
                   </Col>
                 </Row>
-                <Button color="info" onClick={handleSubmit}>
+                <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
                   Update
-                </Button>
+                </LoadingButton>
               </React.Fragment>
             )}
           </Formik>
