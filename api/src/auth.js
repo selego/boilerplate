@@ -46,7 +46,7 @@ class Auth {
       await user.save();
 
       const token = jwt.sign({ _id: user.id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "developement" ? false : true, httpOnly: false };
+      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
       res.cookie("jwt", token, opts);
 
       return res.status(200).send({ ok: true, token, user });
@@ -64,7 +64,7 @@ class Auth {
 
       const user = await this.model.create({ name, password, email });
       const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "developement" ? false : true, httpOnly: true };
+      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: true };
       res.cookie("jwt", token, opts);
 
       return res.status(200).send({ user, token, ok: true });
@@ -92,53 +92,6 @@ class Auth {
       const u = await user.save();
       // console.log(u.email, user.email);
       res.send({ user, token: req.cookies.jwt, ok: true });
-    } catch (error) {
-      capture(error);
-      return res.status(500).send({ ok: false, code: SERVER_ERROR });
-    }
-  }
-
-  async signinWithFacebook(req, res) {
-    try {
-      console.log("req.body.email", req.body.email);
-      console.log("req.body.name", req.body.name);
-
-      let user = await this.model.findOne({ email: req.body.email });
-      if (!user) user = this.model.create(req.body);
-
-      const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-
-      const opts = {
-        maxAge: COOKIE_MAX_AGE,
-        // expires: new Date(Date.now() + MAX_JWT),
-        secure: config.ENVIRONMENT === "developement" ? false : true,
-        httpOnly: true,
-      };
-      res.cookie("jwt", token, opts);
-      user.set({ last_login_at: Date.now() });
-      await user.save();
-
-      res.status(200).send({ ok: true, token, user });
-    } catch (error) {
-      if (error.code === 11000) return res.status(409).send({ ok: false, code: USER_ALREADY_REGISTERED });
-      capture(error);
-      return res.status(500).send({ ok: false, code: SERVER_ERROR });
-    }
-  }
-
-  async signinWithGoogle(req, res) {
-    try {
-      let user = await this.model.findOne({ email: req.user.email });
-      if (!user) user = this.model.create(req.body);
-
-      const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "developement" ? false : true, httpOnly: true };
-      res.cookie("jwt", token, opts);
-
-      user.set({ last_login_at: Date.now() });
-      await user.save();
-
-      res.status(200).send({ ok: true, token, user });
     } catch (error) {
       capture(error);
       return res.status(500).send({ ok: false, code: SERVER_ERROR });
