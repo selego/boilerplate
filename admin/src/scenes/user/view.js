@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Nav, NavItem, NavLink, TabContent, TabPane, FormGroup, Input, Label, Button, Row, Col } from "reactstrap";
 
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import { Formik } from "formik";
 import { toastr } from "react-redux-toastr";
 
@@ -13,6 +13,7 @@ const S3PREFIX = "https://datadvise.s3.eu-west-3.amazonaws.com/app/users";
 export default () => {
   const [activeTab, setActiveTab] = useState("1");
   const [user, setUser] = useState(null);
+  const [deleted, setDeleted] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,7 +23,18 @@ export default () => {
     })();
   }, []);
 
+  async function deleteData() {
+    const confirm = window.confirm("Are you sure ?");
+    if (confirm) {
+      await api.remove(`/user/${id}`);
+      setDeleted(true);
+      toastr.success("successfully removed!");
+    }
+  }
+
   if (!user) return <div>Loading...</div>;
+
+  if (deleted) return <Redirect to="/" />;
 
   return (
     <Container style={{ padding: "40px 0" }}>
@@ -89,9 +101,14 @@ export default () => {
                     </FormGroup>
                   </Col>
                 </Row>
-                <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
-                  Update
-                </LoadingButton>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
+                    Update
+                  </LoadingButton>
+                  <Button style={{ marginLeft: 10 }} color="danger" onClick={deleteData}>
+                    Delete
+                  </Button>
+                </div>
               </React.Fragment>
             )}
           </Formik>
