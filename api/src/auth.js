@@ -64,7 +64,7 @@ class Auth {
 
       const user = await this.model.create({ name, password, email });
       const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: true };
+      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
       res.cookie("jwt", token, opts);
 
       return res.status(200).send({ user, token, ok: true });
