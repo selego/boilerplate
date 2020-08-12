@@ -29,7 +29,6 @@ export default () => {
             console.log(token);
             if (token) {
               api.setToken(token);
-              localStorage.setItem("token", token);
             }
 
             console.log("user", user);

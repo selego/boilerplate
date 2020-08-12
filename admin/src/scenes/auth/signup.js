@@ -28,7 +28,6 @@ export default () => {
             const { user, token } = await api.post(`/user/signup`, values);
             if (token) {
               api.setToken(token);
-              localStorage.setItem("token", token);
             }
             if (user) {
               dispatch(setUser(user));
