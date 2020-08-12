@@ -14,9 +14,13 @@ const { uploadToS3FromBuffer } = require("../utils");
 const UserObject = require("../models/user");
 const AuthObject = require("../auth");
 
+const { validatePassword } = require("../utils");
+
 const UserAuth = new AuthObject(UserObject);
 
 const SERVER_ERROR = "SERVER_ERROR";
+const USER_ALREADY_REGISTERED = "USER_ALREADY_REGISTERED";
+const PASSWORD_NOT_VALIDATED = "PASSWORD_NOT_VALIDATED";
 
 router.post("/signin", (req, res) => UserAuth.signin(req, res));
 router.post("/logout", (req, res) => UserAuth.logout(req, res));
@@ -50,6 +54,20 @@ router.get("/:id", passport.authenticate("user", { session: false }), async (req
 });
 
 //
+router.post("/", passport.authenticate("admin", { session: false }), async (req, res) => {
+  try {
+    if (!validatePassword(req.body.password)) return res.status(400).send({ ok: false, user: null, code: PASSWORD_NOT_VALIDATED });
+
+    const user = await UserObject.create(req.body);
+
+    return res.status(200).send({ user, ok: true });
+  } catch (error) {
+    if (error.code === 11000) return res.status(409).send({ ok: false, code: USER_ALREADY_REGISTERED });
+    capture(error);
+    return res.status(500).send({ ok: false, code: SERVER_ERROR });
+  }
+});
+
 router.get("/", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
     const users = await UserObject.find().sort("-created_at");
