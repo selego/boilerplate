@@ -4,9 +4,12 @@ const { MONGO_URL } = require("./config.js");
 console.log("Connect to MONGO ");
 //Set up default mongoose connection
 
-mongoose.connect(MONGO_URL); // Get Mongoose to use the global promise library
+if (MONGO_URL) {
+  mongoose.connect(MONGO_URL, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+} else {
+  console.log("ERROR CONNEXION. MONGO URL EMPTY");
+}
 
-console.log("Run", MONGO_URL);
 mongoose.Promise = global.Promise; //Get the default connection
 let db = mongoose.connection;
 
