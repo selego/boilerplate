@@ -19,7 +19,7 @@ export default () => {
 
   return (
     <AuthWrapper>
-      <Title>Signin</Title>
+      <Title>Signup</Title>
       {user && <Redirect to="/" />}
       <Formik
         initialValues={{ name: "", email: "", password: "", repassword: "" }}
@@ -93,7 +93,7 @@ export default () => {
                 <p style={{ fontSize: 12, color: "rgb(253, 49, 49)" }}>{errors.repassword}</p>
               </StyledFormGroup>
               <Submit loading={isSubmitting} type="submit" color="primary">
-                Signin
+                Signup
               </Submit>
               <Account>
                 If you already have account you can <Link to="/auth/signin">Signin</Link>.
