@@ -14,36 +14,21 @@ import api from "../../services/api";
 import LoadingButton from "../../components/loadingButton";
 
 export default () => {
-  const validateEmail = (value) => {
-    if (!validator.isEmail(value)) {
-      return "Invalid email address";
-    }
-  };
-  const validatePassword = (value) => {
-    if (validator.isEmpty(value)) {
-      return "This field is Required";
-    }
-  };
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Auth.user);
 
   return (
     <AuthWrapper>
-      <Title>Signin</Title>
+      <Title>Signup</Title>
       {user && <Redirect to="/" />}
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ name: "", email: "", password: "", repassword: "" }}
         onSubmit={async (values, actions) => {
           try {
-            const { user, token } = await api.post(`/user/signin`, values);
-            console.log(token);
+            const { user, token } = await api.post(`/user/signup`, values);
             if (token) {
               api.setToken(token);
-              localStorage.setItem("token", token);
             }
-
-            console.log("user", user);
             if (user) {
               dispatch(setUser(user));
             }
@@ -59,21 +44,59 @@ export default () => {
             <form onSubmit={handleSubmit}>
               <StyledFormGroup>
                 <div>
-                  <InputField validate={validateEmail} name="email" type="email" id="email" value={values.email} onChange={handleChange} />
+                  <InputField validate={(v) => validator.isEmpty(v) && "This field is Required"} name="name" type="name" id="name" value={values.name} onChange={handleChange} />
+                  <label htmlFor="name">Full name</label>
+                </div>
+                <p style={{ fontSize: 12, color: "rgb(253, 49, 49)" }}>{errors.name}</p>
+              </StyledFormGroup>
+              <StyledFormGroup>
+                <div>
+                  <InputField
+                    validate={(v) => !validator.isEmail(v) && "Invalid email address"}
+                    name="email"
+                    type="email"
+                    id="email"
+                    value={values.email}
+                    onChange={handleChange}
+                  />
                   <label htmlFor="email">E-mail address</label>
                 </div>
                 <p style={{ fontSize: 12, color: "rgb(253, 49, 49)" }}>{errors.email}</p>
               </StyledFormGroup>
               <StyledFormGroup>
                 <div>
-                  <InputField validate={validatePassword} name="password" type="password" id="password" value={values.password} onChange={handleChange} />
+                  <InputField
+                    validate={(v) => validator.isEmpty(v) && "This field is Required"}
+                    name="password"
+                    type="password"
+                    id="password"
+                    value={values.password}
+                    onChange={handleChange}
+                  />
                   <label htmlFor="password">Password</label>
                 </div>
                 <p style={{ fontSize: 12, color: "rgb(253, 49, 49)" }}>{errors.password}</p>
               </StyledFormGroup>
+              <StyledFormGroup>
+                <div>
+                  <InputField
+                    validate={(v) => values.password !== values.repassword && "Should be same as password"}
+                    name="repassword"
+                    type="password"
+                    id="repassword"
+                    value={values.repassword}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="repassword">Re-type Password</label>
+                </div>
+                <p style={{ fontSize: 12, color: "rgb(253, 49, 49)" }}>{errors.repassword}</p>
+              </StyledFormGroup>
               <Submit loading={isSubmitting} type="submit" color="primary">
-                Signin
+                Signup
               </Submit>
+              <Account>
+                If you already have account you can <Link to="/auth/signin">Signin</Link>.
+              </Account>
             </form>
           );
         }}
@@ -136,9 +159,14 @@ const InputField = styled(Field)`
     }
   }
 `;
+const Account = styled.div`
+  text-align: center;
+  padding-top: 25px;
+  font-size: 14px;
+`;
 
 const StyledFormGroup = styled(FormGroup)`
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   div {
     display: flex;
     flex-direction: column-reverse;

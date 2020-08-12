@@ -21,15 +21,13 @@ export default () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { user, token } = await api.post(`/user/signin`, { email: "se.legoff@gmail.com", password: "addicto123&" });
-
-        // const { user, token } = await api.get("/user/signin_token");
-        if (token) api.setToken(token);
-        if (!user) return setLoading(false);
+        const res = await api.get("/user/signin_token");
+        if (!res.ok || !res.user) return setLoading(false);
+        if (res.token) api.setToken(res.token);
 
         dispatch(setUser(user));
       } catch (e) {
-        localStorage.removeItem("token");
+        console.log(e);
       }
       setLoading(false);
     }

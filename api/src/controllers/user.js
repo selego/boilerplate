@@ -50,7 +50,7 @@ router.get("/:id", passport.authenticate("user", { session: false }), async (req
 });
 
 //
-router.get("/", passport.authenticate("admin", { session: false }), async (req, res) => {
+router.get("/", passport.authenticate("user", { session: false }), async (req, res) => {
   try {
     const users = await UserObject.find().sort("-created_at");
     return res.status(200).send({ ok: true, users });

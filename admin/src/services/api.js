@@ -61,34 +61,36 @@ class api {
 
   get(path) {
     return new Promise(async (resolve, reject) => {
-      const response = await fetch(`${apiURL}${path}`, {
-        mode: "cors",
-        method: "GET",
-        headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
-      });
+      try {
+        const response = await fetch(`${apiURL}${path}`, {
+          mode: "cors",
+          method: "GET",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+        });
 
-      const res = await response.json();
-      if (response.status !== 200) {
-        return reject(res);
+        const res = await response.json();
+        resolve(res);
+      } catch (e) {
+        reject(e);
       }
-
-      resolve(res);
     });
   }
 
   put(path, body) {
     return new Promise(async (resolve, reject) => {
-      const response = await fetch(`${apiURL}${path}`, {
-        mode: "cors",
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
-        body: typeof body === "string" ? body : JSON.stringify(body),
-      });
-      const res = await response.json();
-      if (response.status !== 200) {
-        return reject(res);
+      try {
+        const response = await fetch(`${apiURL}${path}`, {
+          mode: "cors",
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+          body: typeof body === "string" ? body : JSON.stringify(body),
+        });
+
+        const res = await response.json();
+        resolve(res);
+      } catch (e) {
+        reject(e);
       }
-      resolve(res);
     });
   }
 
@@ -100,17 +102,18 @@ class api {
     formData.append("body", JSON.stringify(body));
 
     return new Promise(async (resolve, reject) => {
-      const response = await fetch(`${apiURL}${path}`, {
-        mode: "cors",
-        method: "PUT",
-        headers: { Authorization: `JWT ${this.token}` },
-        body: formData,
-      });
-      if (response.status !== 200) {
-        return resolve({});
+      try {
+        const response = await fetch(`${apiURL}${path}`, {
+          mode: "cors",
+          method: "PUT",
+          headers: { Authorization: `JWT ${this.token}` },
+          body: formData,
+        });
+        const res = await response.json();
+        resolve(res);
+      } catch (e) {
+        reject(e);
       }
-      const res = await response.json();
-      resolve(res);
     });
   }
 
@@ -122,32 +125,34 @@ class api {
     formData.append("body", JSON.stringify(body));
 
     return new Promise(async (resolve, reject) => {
-      const response = await fetch(`${apiURL}${path}`, {
-        mode: "cors",
-        method: "POST",
-        headers: {},
-        body: formData,
-      });
-      if (response.status !== 200) {
-        return resolve({});
+      try {
+        const response = await fetch(`${apiURL}${path}`, {
+          mode: "cors",
+          method: "POST",
+          headers: {},
+          body: formData,
+        });
+        const res = await response.json();
+        resolve(res);
+      } catch (e) {
+        reject(e);
       }
-      const res = await response.json();
-      resolve(res);
     });
   }
 
   remove(path) {
     return new Promise(async (resolve, reject) => {
-      const response = await fetch(`${apiURL}${path}`, {
-        mode: "cors",
-        method: "DELETE",
-        headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
-      });
-      if (response.status !== 200) {
-        return reject({});
+      try {
+        const response = await fetch(`${apiURL}${path}`, {
+          mode: "cors",
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+        });
+        const res = await response.json();
+        resolve(res);
+      } catch (e) {
+        reject(e);
       }
-      const res = await response.json();
-      resolve(res);
     });
   }
 
@@ -168,34 +173,6 @@ class api {
         resolve(res);
       } catch (e) {
         reject(e);
-      }
-    });
-  }
-
-  openpdf(path, fileName = "report.pdf") {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await fetch(`${apiURL}${path}`, {
-          mode: "cors",
-          method: "GET",
-          headers: { "Content-Type": "application/json", Authorization: this.token },
-        });
-        if (response.status !== 200) {
-          return reject(res);
-        }
-        const file = await response.blob();
-
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        a.href = URL.createObjectURL(file);
-        a.download = fileName;
-        a.click();
-
-        resolve();
-      } catch (e) {
-        console.log(e);
-        reject();
       }
     });
   }
