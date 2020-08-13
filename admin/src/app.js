@@ -25,7 +25,7 @@ export default () => {
         if (!res.ok || !res.user) return setLoading(false);
         if (res.token) api.setToken(res.token);
 
-        dispatch(setUser(user));
+        dispatch(setUser(res.user));
       } catch (e) {
         console.log(e);
       }
@@ -43,7 +43,7 @@ export default () => {
       <Router>
         <div className="main">
           {user && <Drawer />}
-          <div style={{ height: "100%", marginLeft: 160 }}>
+          <div style={{ height: "100%", marginLeft: user ? 160 : 0 }}>
             <Switch>
               <Route path="/auth" component={Auth} />
               <RestrictedRoute path="/" component={User} />
