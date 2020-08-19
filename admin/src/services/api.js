@@ -65,6 +65,7 @@ class api {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
           method: "GET",
+          credentials: "include",
           headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
         });
 
@@ -82,6 +83,7 @@ class api {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
           method: "PUT",
+          credentials: "include",
           headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
           body: typeof body === "string" ? body : JSON.stringify(body),
         });
@@ -106,6 +108,7 @@ class api {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
           method: "PUT",
+          credentials: "include",
           headers: { Authorization: `JWT ${this.token}` },
           body: formData,
         });
@@ -129,6 +132,7 @@ class api {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
           method: "POST",
+          credentials: "include",
           headers: {},
           body: formData,
         });
@@ -145,6 +149,7 @@ class api {
       try {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
+          credentials: "include",
           method: "DELETE",
           headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
         });
@@ -162,6 +167,7 @@ class api {
         const response = await fetch(`${apiURL}${path}`, {
           mode: "cors",
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
           body: typeof body === "string" ? body : JSON.stringify(body),
         });
