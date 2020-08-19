@@ -25,18 +25,15 @@ export default () => {
         initialValues={{ name: "", email: "", password: "", repassword: "" }}
         onSubmit={async (values, actions) => {
           try {
-            const { user, token } = await api.post(`/user/signup`, values);
-            if (token) {
-              api.setToken(token);
-            }
-            if (user) {
-              dispatch(setUser(user));
-            }
+            const { user, token, code, ok } = await api.post(`/user/signup`, values);
+            actions.setSubmitting(false);
+            if (!ok) return toastr.error("Wrong signup", code);
+            if (token) api.setToken(token);
+            if (user) dispatch(setUser(user));
           } catch (e) {
+            actions.setSubmitting(false);
             console.log("e", e);
-            toastr.error("Wrong login", e.code);
           }
-          actions.setSubmitting(false);
         }}
       >
         {({ values, errors, isSubmitting, handleChange, handleSubmit }) => {

@@ -74,8 +74,7 @@ function validatePassword(password) {
     .is()
     .max(100) // Maximum length 100
     .has()
-    .letters() // Must have letters
-    .digits(); // Must have digits
+    .letters(); // Must have letters
 
   return schema.validate(password);
 }
