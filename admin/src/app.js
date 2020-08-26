@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { setUser } from "./redux/auth/actions";
 
+import Account from "./scenes/account";
 import Auth from "./scenes/auth";
 import User from "./scenes/user";
 import Drawer from "./components/drawer";
@@ -46,6 +47,7 @@ export default () => {
           <div style={{ height: "100%", marginLeft: user ? 160 : 0 }}>
             <Switch>
               <Route path="/auth" component={Auth} />
+              <RestrictedRoute path="/account" component={Account} />
               <RestrictedRoute path="/" component={User} />
             </Switch>
           </div>

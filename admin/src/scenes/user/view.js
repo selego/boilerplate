@@ -7,8 +7,11 @@ import { toastr } from "react-redux-toastr";
 
 import api from "../../services/api";
 import LoadingButton from "../../components/loadingButton";
+import Header from "../../components/header";
 
-const S3PREFIX = "https://datadvise.s3.eu-west-3.amazonaws.com/app/users";
+import { S3PREFIX } from "../../config";
+
+const UPLAOD_URL = `${S3PREFIX}/users`;
 
 export default () => {
   const [activeTab, setActiveTab] = useState("1");
@@ -37,93 +40,97 @@ export default () => {
   if (deleted) return <Redirect to="/" />;
 
   return (
-    <Container style={{ padding: "40px 0" }}>
-      <Nav tabs style={{ marginBottom: 30 }}>
-        <NavItem>
-          <NavLink style={{ backgroundColor: activeTab === "1" && "#eee" }} onClick={() => setActiveTab("1")}>
-            View
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink style={{ backgroundColor: activeTab === "2" && "#eee" }} onClick={() => setActiveTab("2")}>
-            Raw
-          </NavLink>
-        </NavItem>
-      </Nav>
-      <TabContent activeTab={activeTab}>
-        <TabPane tabId="1">
-          <Formik
-            initialValues={user}
-            onSubmit={async (values) => {
-              try {
-                await api.put(`/user?user_id=${user._id}`, values);
-                toastr.success("Updated!");
-              } catch (e) {
-                console.log(e);
-                toastr.error("Some Error!");
-              }
-            }}
-          >
-            {({ values, handleChange, handleSubmit, isSubmitting }) => (
-              <React.Fragment>
-                <Row>
-                  <Col md={6}>
-                    <FormGroup>
-                      <Label>Name</Label>
-                      <Input name="name" value={values.name} onChange={handleChange} />
-                    </FormGroup>
-                  </Col>
-                  <Col md={6}>
-                    <FormGroup>
-                      <Label>Email</Label>
-                      <Input disabled name="email" value={values.email} onChange={handleChange} />
-                    </FormGroup>
-                  </Col>
-                  <Col md={6}>
-                    <FormGroup>
-                      <ImageInput
-                        name="avatar"
-                        onChange={handleChange}
-                        title="Avatar"
-                        value={values.avatar}
-                        url={`${S3PREFIX}/${user._id}`}
-                        route={`/user/image?user_id=${user._id}`}
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col md={6}>
-                    <FormGroup>
-                      <Label>Role</Label>
-                      <Input type="select" name="role" value={values.role} onChange={handleChange}>
-                        <option value="admin">Admin</option>
-                        <option value="normal">Normal</option>
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
-                    Update
-                  </LoadingButton>
-                  <Button style={{ marginLeft: 10 }} color="danger" onClick={deleteData}>
-                    Delete
-                  </Button>
+    <div>
+      <Header title={user.name} />
+
+      <Container style={{ padding: "40px 0" }}>
+        <Nav tabs style={{ marginBottom: 30 }}>
+          <NavItem>
+            <NavLink style={{ backgroundColor: activeTab === "1" && "#eee" }} onClick={() => setActiveTab("1")}>
+              View
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink style={{ backgroundColor: activeTab === "2" && "#eee" }} onClick={() => setActiveTab("2")}>
+              Raw
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="1">
+            <Formik
+              initialValues={user}
+              onSubmit={async (values) => {
+                try {
+                  await api.put(`/user?user_id=${user._id}`, values);
+                  toastr.success("Updated!");
+                } catch (e) {
+                  console.log(e);
+                  toastr.error("Some Error!");
+                }
+              }}
+            >
+              {({ values, handleChange, handleSubmit, isSubmitting }) => (
+                <React.Fragment>
+                  <Row>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label>Name</Label>
+                        <Input name="name" value={values.name} onChange={handleChange} />
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label>Email</Label>
+                        <Input disabled name="email" value={values.email} onChange={handleChange} />
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                        <ImageInput
+                          name="avatar"
+                          onChange={handleChange}
+                          title="Avatar"
+                          value={values.avatar}
+                          url={`${UPLAOD_URL}/${user._id}`}
+                          route={`/user/image?user_id=${user._id}`}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label>Role</Label>
+                        <Input type="select" name="role" value={values.role} onChange={handleChange}>
+                          <option value="admin">Admin</option>
+                          <option value="normal">Normal</option>
+                        </Input>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
+                      Update
+                    </LoadingButton>
+                    <Button style={{ marginLeft: 10 }} color="danger" onClick={deleteData}>
+                      Delete
+                    </Button>
+                  </div>
+                </React.Fragment>
+              )}
+            </Formik>
+          </TabPane>
+          <TabPane tabId="2">
+            <pre>
+              {Object.keys(user).map((e) => (
+                <div>
+                  <strong>{e}:</strong> {JSON.stringify(user[e])}
                 </div>
-              </React.Fragment>
-            )}
-          </Formik>
-        </TabPane>
-        <TabPane tabId="2">
-          <pre>
-            {Object.keys(user).map((e) => (
-              <div>
-                <strong>{e}:</strong> {JSON.stringify(user[e])}
-              </div>
-            ))}
-          </pre>
-        </TabPane>
-      </TabContent>
-    </Container>
+              ))}
+            </pre>
+          </TabPane>
+        </TabContent>
+      </Container>
+    </div>
   );
 };
 

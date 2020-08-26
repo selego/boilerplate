@@ -5,4 +5,6 @@ if (window.location.href.indexOf("localhost") !== -1 || window.location.href.ind
   apiURL = "http://localhost:3000";
 }
 
-export { apiURL };
+const S3PREFIX = "https://datadvise.s3.eu-west-3.amazonaws.com/app";
+
+export { apiURL, S3PREFIX };
