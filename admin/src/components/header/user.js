@@ -45,6 +45,10 @@ export default () => {
 
 const Dropdown = styled.div`
   position: relative;
+  :hover > div {
+    opacity: 1;
+    visibility: visible;
+  }
 `;
 
 const Menu = styled.div`
