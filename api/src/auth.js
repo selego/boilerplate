@@ -98,21 +98,21 @@ class Auth {
     }
   }
 
-  async resetPassword(req, res, model) {
+  async resetPassword(req, res) {
     try {
       const match = await req.user.comparePassword(req.body.password);
       if (!match) {
         return res.status(401).send({ ok: false, code: PASSWORD_INVALID });
       }
-      if (req.body.password !== req.body.password1) {
+      if (req.body.newPassword !== req.body.verifyPassword) {
         return res.status(422).send({ ok: false, code: PASSWORDS_NOT_MATCH });
       }
-      if (!validatePassword(req.body.password)) {
+      if (!validatePassword(req.body.newPassword)) {
         return res.status(400).send({ ok: false, code: PASSWORD_NOT_VALIDATED });
       }
-      const obj = await model.findById(req.user._id);
+      const obj = await this.model.findById(req.user._id);
 
-      obj.set({ password: req.body.password });
+      obj.set({ password: req.body.newPassword });
       await obj.save();
       return res.status(200).send({ ok: true, user: obj });
     } catch (error) {

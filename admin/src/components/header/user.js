@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import { setUser } from "../../redux/auth/actions";
@@ -14,20 +14,12 @@ export default () => {
     await api.post(`/user/logout`);
     dispatch(setUser(null));
   }
-
-  function renderPicto() {
-    const user = useSelector((state) => state.Auth.user);
-
-    return (
+  return (
+    <div className="User">
       <Dropdown>
         <Aavatar onClick={() => setOpen(!open)} src={require("../../assets/avatar.jpg")} />
         <Menu open={open}>
           <Close onClick={() => setOpen(false)}>&times;</Close>
-          {user.role === "admin" && (
-            <Item onClick={() => setOpen(false)}>
-              <Link to="/admin">Admin</Link>
-            </Item>
-          )}
           <Item onClick={() => setOpen(false)}>
             <Link to="/account">Account</Link>
           </Item>
@@ -37,10 +29,8 @@ export default () => {
           </Item>
         </Menu>
       </Dropdown>
-    );
-  }
-
-  return <div className="User">{renderPicto()}</div>;
+    </div>
+  );
 };
 
 const Dropdown = styled.div`

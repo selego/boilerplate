@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, FormGroup, Input, Label, Button, Row, Col } from "reactstrap";
+import { Container, FormGroup, Input, Label, Button, Row, Col, Modal, ModalHeader, ModalBody } from "reactstrap";
 import { useSelector } from "react-redux";
 import { Formik } from "formik";
 import { toastr } from "react-redux-toastr";
@@ -59,17 +59,16 @@ export default () => {
                       route={`/user/image?user_id=${user._id}`}
                     />
                   </FormGroup>
+                  <ChangePassword />
                 </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Role</Label>
-                    <Input type="select" name="role" value={values.role} onChange={handleChange}>
-                      <option value="admin">Admin</option>
-                      <option value="normal">Normal</option>
-                    </Input>
+                    <Input disabled name="role" value={values.role} />
                   </FormGroup>
                 </Col>
               </Row>
+              <hr />
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <LoadingButton loading={isSubmitting} color="info" onClick={handleSubmit}>
                   Update
@@ -110,5 +109,60 @@ const ImageInput = ({ title, value, url, route }) => {
       {img ? <img src={img} style={{ width: "200px", objectFit: "contain" }} /> : <div className="image-input" />}
       <input accept=".gif,.jpg,.jpeg,.png" hidden type="file" onChange={handleChange} />
     </Label>
+  );
+};
+
+const ChangePassword = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <Button style={{ padding: "15px 0" }} color="link" onClick={() => setOpen(true)}>
+        Change password
+      </Button>
+
+      <Modal isOpen={open} toggle={() => setOpen(false)} className="change-password">
+        <ModalHeader>Change password</ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{ password: "", newPassword: "", verifyPassword: "" }}
+            onSubmit={async (values, actions) => {
+              try {
+                const res = await api.post(`/user/reset_password`, values);
+
+                toastr.success("Password changed!");
+                setOpen(false);
+              } catch (e) {
+                console.log("error", e.code);
+                toastr.error("error", e.code);
+              }
+              actions.setSubmitting(false);
+            }}
+          >
+            {({ values, isSubmitting, handleChange, handleSubmit }) => {
+              return (
+                <div autoComplete="off">
+                  <FormGroup>
+                    <label>Password</label>
+                    <Input name="password" type="password" value={values.password} onChange={handleChange} />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>New Password</label>
+                    <Input name="newPassword" type="password" value={values.newPassword} onChange={handleChange} />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Re-type Password</label>
+                    <Input name="verifyPassword" type="password" value={values.verifyPassword} onChange={handleChange} />
+                  </FormGroup>
+                  <Button type="submit" color="info" disabled={isSubmitting} onClick={handleSubmit}>
+                    Update
+                  </Button>
+                </div>
+              );
+            }}
+          </Formik>
+        </ModalBody>
+      </Modal>
+    </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import * as Sentry from "@sentry/browser";
 
 import { setUser } from "./redux/auth/actions";
 
@@ -13,6 +14,10 @@ import Drawer from "./components/drawer";
 import api from "./services/api";
 
 import "./index.less";
+
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({ dsn: "SENTRY_URL", environment: "app" });
+}
 
 export default () => {
   const [loading, setLoading] = useState(true);
