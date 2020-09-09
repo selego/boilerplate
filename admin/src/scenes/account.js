@@ -6,7 +6,6 @@ import { toastr } from "react-redux-toastr";
 
 import api from "../services/api";
 import LoadingButton from "../components/loadingButton";
-import Header from "../components/header";
 
 import { S3PREFIX } from "../config";
 
@@ -19,7 +18,6 @@ export default () => {
 
   return (
     <div>
-      <Header title={user.name} />
       <Container style={{ padding: "40px 0" }}>
         <Formik
           initialValues={user}

@@ -11,6 +11,8 @@ import Auth from "./scenes/auth";
 import User from "./scenes/user";
 import Drawer from "./components/drawer";
 
+import Header from "./components/header";
+
 import api from "./services/api";
 
 import "./index.less";
@@ -49,7 +51,8 @@ export default () => {
       <Router>
         <div className="main">
           {user && <Drawer />}
-          <div style={{ height: "100%", marginLeft: user ? 160 : 0 }}>
+          {user && <Header />}
+          <div style={{ height: "100%" }}>
             <Switch>
               <Route path="/auth" component={Auth} />
               <RestrictedRoute path="/account" component={Account} />

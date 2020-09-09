@@ -69,10 +69,11 @@ const Menu = styled.div`
 `;
 
 const Aavatar = styled.img`
-  width: 36px !important;
-  height: 36px !important;
+  width: 36px;
+  height: 36px;
   background-color: #aaa;
   border-radius: 50%;
+  object-fit: contain;
   cursor: pointer;
 `;
 

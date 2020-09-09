@@ -2,12 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import User from "./user";
 
-export default ({ title }) => {
+export default () => {
   return (
-    <Header>
-      <Title>{title}</Title>
-      <User />
-    </Header>
+    <div style={{ height: 70 }}>
+      <Header>
+        <User />
+      </Header>
+    </div>
   );
 };
 
@@ -15,12 +16,11 @@ const Header = styled.div`
   padding: 15px;
   background-color: #284fa2;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-`;
-
-const Title = styled.div`
-  color: #fff;
-  font-size: 26px;
-  font-weight: 800;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
 `;
