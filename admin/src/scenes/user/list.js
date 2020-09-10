@@ -7,8 +7,6 @@ import { toastr } from "react-redux-toastr";
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
 
-import Header from "../../components/header";
-
 export default () => {
   const [users, setUsers] = useState(null);
   const history = useHistory();
@@ -25,7 +23,6 @@ export default () => {
 
   return (
     <div>
-      <Header title="Users" />
       <Container style={{ padding: "40px 0" }}>
         <Create onChange={() => setRefresh(true)} />
         <Table hover>
