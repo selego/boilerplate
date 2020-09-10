@@ -73,6 +73,7 @@ const Aavatar = styled.img`
   height: 36px;
   background-color: #aaa;
   border-radius: 50%;
+  object-fit: cover;
   object-fit: contain;
   cursor: pointer;
 `;
