@@ -7,10 +7,7 @@ import { toastr } from "react-redux-toastr";
 
 import api from "../../services/api";
 import LoadingButton from "../../components/loadingButton";
-
-import { S3PREFIX } from "../../config";
-
-const UPLAOD_URL = `${S3PREFIX}/users`;
+import ImageInput from "../../components/ImageInput";
 
 export default () => {
   const [activeTab, setActiveTab] = useState("1");
@@ -85,11 +82,12 @@ export default () => {
                     <Col md={6}>
                       <FormGroup>
                         <ImageInput
-                          name="avatar"
-                          onChange={handleChange}
-                          title="Avatar"
-                          value={values.avatar}
-                          url={`${UPLAOD_URL}/${user._id}`}
+                          onUpload={async (url) => {
+                            await api.put(`/user?user_id=${user._id}`, { avatar: url });
+                            toastr.success("success");
+                          }}
+                          onError={(error) => toastr.error(error)}
+                          url={values.avatar}
                           route={`/user/image?user_id=${user._id}`}
                         />
                       </FormGroup>
@@ -128,35 +126,5 @@ export default () => {
         </TabContent>
       </Container>
     </div>
-  );
-};
-
-const ImageInput = ({ title, value, url, route }) => {
-  const [img, setImg] = useState(value);
-
-  function handleChange(evt) {
-    const files = evt.target.files;
-    const file = files[0];
-    let imgObject = new Image();
-    let imgUrl = URL.createObjectURL(file);
-    imgObject.src = imgUrl;
-    imgObject.onload = async () => {
-      try {
-        const { user } = await api.putFormData(route, { avatar: `${url}/${file.name}` }, files);
-        toastr.success("sucess");
-        setImg(user.avatar);
-      } catch (e) {
-        toastr.success(e.code);
-        console.log(e);
-      }
-    };
-  }
-
-  return (
-    <Label>
-      <div>{title}</div>
-      {img ? <img src={img} style={{ width: "200px", objectFit: "contain" }} /> : <div className="image-input" />}
-      <input accept=".gif,.jpg,.jpeg,.png" hidden type="file" onChange={handleChange} />
-    </Label>
   );
 };

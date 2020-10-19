@@ -83,10 +83,10 @@ router.put("/image", passport.authenticate("user", { session: false }), upload.a
   try {
     let _id = req.user.role === "admin" ? req.query.user_id || req.user._id : req.user._id;
     const files = req.files || [];
+    const url = `app/users/${_id}/${files[0].originalname}`;
+    await uploadToS3FromBuffer(url, files[0].buffer);
 
-    await uploadToS3FromBuffer(`app/users/${_id}/${files[0].originalname}`, files[0].buffer);
-
-    res.status(200).send({ ok: true });
+    res.status(200).send({ ok: true, url });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: SERVER_ERROR, error });
