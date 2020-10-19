@@ -27,7 +27,9 @@ const Sidebar = styled.div`
   top: 0;
 `;
 
-const Nav = styled.div`
+const Nav = styled.ul`
+  list-style: none;
+  padding-top: 30px;
   a {
     text-decoration: none;
     padding: 15px 20px 10px;
