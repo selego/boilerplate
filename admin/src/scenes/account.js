@@ -95,7 +95,7 @@ const ChangePassword = () => {
             onSubmit={async (values, actions) => {
               try {
                 const res = await api.post(`/user/reset_password`, values);
-
+                if (!res.ok) throw res;
                 toastr.success("Password changed!");
                 setOpen(false);
               } catch (e) {

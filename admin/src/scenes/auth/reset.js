@@ -20,7 +20,8 @@ export default ({ location }) => {
         onSubmit={async (values, actions) => {
           try {
             const { token } = queryString.parse(location.search);
-            await api.post("/user/forgot_password_reset", { ...values, token });
+            const res = await api.post("/user/forgot_password_reset", { ...values, token });
+            if (!res.ok) throw res;
             toastr.success("Success!");
             setRedirect(true);
           } catch (e) {

@@ -67,7 +67,8 @@ const Create = ({ onChange }) => {
             initialValues={{ name: "", role: "normal", password: "", email: "" }}
             onSubmit={async (values, { setSubmitting }) => {
               try {
-                await api.post("/user", values);
+                const res = await api.post("/user", values);
+                if (!res.ok) throw res;
                 toastr.success("Created!");
                 onChange();
                 setOpen(false);
