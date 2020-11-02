@@ -4,11 +4,9 @@ import User from "./user";
 
 export default () => {
   return (
-    <div style={{ height: 70 }}>
-      <Header>
-        <User />
-      </Header>
-    </div>
+    <Header>
+      <User />
+    </Header>
   );
 };
 
@@ -18,9 +16,9 @@ const Header = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  position: fixed;
+  position: sticky;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
 `;

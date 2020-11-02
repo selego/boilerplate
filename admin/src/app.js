@@ -52,7 +52,7 @@ export default () => {
         <div className="main">
           {user && <Drawer />}
           {user && <Header />}
-          <div style={{ height: "100%", marginLeft: user ? 160 : 0 }}>
+          <div className="screen-container">
             <Switch>
               <Route path="/auth" component={Auth} />
               <RestrictedRoute path="/account" component={Account} />

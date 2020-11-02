@@ -79,7 +79,7 @@ const Aavatar = styled.img`
 `;
 
 const Item = styled.div`
-  font: 13px Arial;
+  font: 15px Arial;
   border-left: solid transparent 4px;
   border-radius: 0;
   text-align: left;
@@ -98,10 +98,13 @@ const Item = styled.div`
   }
 `;
 const Close = styled.div`
-  font-size: 30px;
+  font-size: 32px;
   color: #666;
   padding: 0 15px 20px;
   display: none;
+  width: 45px;
+  padding: 0 15px;
+  margin-left: auto;
   @media (max-width: 767px) {
     display: block;
   }

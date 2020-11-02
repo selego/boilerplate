@@ -15,7 +15,7 @@ export default () => {
 
   return (
     <div>
-      <Container style={{ padding: "40px 0" }}>
+      <Container style={{ padding: "40px 15px" }}>
         <Formik
           initialValues={user}
           onSubmit={async (values) => {
