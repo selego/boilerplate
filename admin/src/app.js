@@ -15,11 +15,11 @@ import Header from "./components/header";
 
 import api from "./services/api";
 
+import { SENTRY_URL } from "./config";
+
 import "./index.less";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({ dsn: "SENTRY_URL", environment: "app" });
-}
+if (process.env.NODE_ENV === "production") SENTRY_URL && Sentry.init({ dsn: SENTRY_URL, environment: "app" });
 
 export default () => {
   const [loading, setLoading] = useState(true);
