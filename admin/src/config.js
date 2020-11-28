@@ -6,5 +6,6 @@ if (window.location.href.indexOf("localhost") !== -1 || window.location.href.ind
 }
 
 const S3PREFIX = "https://datadvise.s3.eu-west-3.amazonaws.com/app";
+const SENTRY_URL = "";
 
-export { apiURL, S3PREFIX };
+export { apiURL, S3PREFIX, SENTRY_URL };
