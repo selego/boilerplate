@@ -6,11 +6,11 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 require("./mongo");
 
-const { PORT } = require("./config.js");
+const { PORT, APP_URL } = require("./config.js");
 
 const app = express();
 
-const origin = ["http://localhost:8083"];
+const origin = [APP_URL];
 app.use(cors({ credentials: true, origin }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
