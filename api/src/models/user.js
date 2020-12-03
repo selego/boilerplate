@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-// const sendinblue = require("../sendinblue");
+const sendingblue = require("../sendinblue");
 
 const MODELNAME = "user";
 
@@ -36,6 +36,17 @@ Schema.pre("save", function (next) {
 Schema.methods.comparePassword = function (p) {
   return bcrypt.compare(p, this.password || "");
 };
+
+Schema.post("save", function (doc) {
+  sendingblue.sync(doc);
+});
+Schema.post("findOneAndUpdate", function (doc) {
+  sendingblue.sync(doc);
+});
+
+Schema.post("remove", function (doc) {
+  sendingblue.unsync(doc);
+});
 
 const OBJ = mongoose.model(MODELNAME, Schema);
 module.exports = OBJ;
