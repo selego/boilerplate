@@ -25,10 +25,9 @@ export default () => {
         initialValues={{ name: "", email: "", password: "", repassword: "" }}
         onSubmit={async (values, actions) => {
           try {
-            const { user, token, code, ok } = await api.post(`/user/signup`, values);
+            const { user, code, ok } = await api.post(`/user/signup`, values);
             actions.setSubmitting(false);
             if (!ok) return toastr.error("Wrong signup", code);
-            if (token) api.setToken(token);
             if (user) dispatch(setUser(user));
           } catch (e) {
             actions.setSubmitting(false);

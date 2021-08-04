@@ -25,13 +25,7 @@ export default () => {
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values, actions) => {
           try {
-            const { user, token } = await api.post(`/user/signin`, values);
-            console.log(token);
-            if (token) {
-              api.setToken(token);
-            }
-
-            console.log("user", user);
+            const { user } = await api.post(`/user/signin`, values);
             if (user) {
               dispatch(setUser(user));
             }

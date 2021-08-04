@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const { capture } = require("./sentry");
 
 const config = require("./config");
-const { validatePassword } = require("./utils");
+const { validatePassword, cookieOptions, logoutCookieOptions } = require("./utils");
 
 const EMAIL_OR_PASSWORD_INVALID = "EMAIL_OR_PASSWORD_INVALID";
 const PASSWORD_INVALID = "PASSWORD_INVALID";
@@ -35,9 +35,8 @@ class Auth {
     //@todo
     const user = { email, password };
     const token = jwt.sign({ _id: "5e3043a9ae27be6d1b7ec5ce" }, config.secret, { expiresIn: JWT_MAX_AGE });
-    const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
-    res.cookie("jwt", token, opts);
-    return res.status(200).send({ ok: true, token, user });
+    res.cookie("jwt", token, cookieOptions());
+    return res.status(200).send({ ok: true, user });
 
     if (!email || !password) return res.status(400).send({ ok: false, code: EMAIL_AND_PASSWORD_REQUIRED });
 
@@ -53,10 +52,9 @@ class Auth {
       await user.save();
 
       const token = jwt.sign({ _id: user.id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
-      res.cookie("jwt", token, opts);
+      res.cookie("jwt", token, cookieOptions());
 
-      return res.status(200).send({ ok: true, token, user });
+      return res.status(200).send({ ok: true, user });
     } catch (error) {
       capture(error);
       return res.status(500).send({ ok: false, code: SERVER_ERROR });
@@ -71,10 +69,9 @@ class Auth {
 
       const user = await this.model.create({ name, password, email });
       const token = jwt.sign({ _id: user._id }, config.secret, { expiresIn: JWT_MAX_AGE });
-      const opts = { maxAge: COOKIE_MAX_AGE, secure: config.ENVIRONMENT === "development" ? false : true, httpOnly: false };
-      res.cookie("jwt", token, opts);
+      res.cookie("jwt", token, cookieOptions());
 
-      return res.status(200).send({ user, token, ok: true });
+      return res.status(200).send({ user, ok: true });
     } catch (error) {
       if (error.code === 11000) return res.status(409).send({ ok: false, code: USER_ALREADY_REGISTERED });
       capture(error);
@@ -84,7 +81,7 @@ class Auth {
 
   async logout(req, res) {
     try {
-      res.clearCookie("jwt");
+      res.clearCookie("jwt", logoutCookieOptions());
       return res.status(200).send({ ok: true });
     } catch (error) {
       capture(error);
@@ -92,13 +89,12 @@ class Auth {
     }
   }
 
-  async signinToken(req, res) {
+  async me(req, res) {
     try {
       const { user } = req;
       user.set({ last_login_at: Date.now() });
-      const u = await user.save();
-      // console.log(u.email, user.email);
-      res.send({ user, token: req.cookies.jwt, ok: true });
+      await user.save();
+      res.send({ user, ok: true });
     } catch (error) {
       capture(error);
       return res.status(500).send({ ok: false, code: SERVER_ERROR });

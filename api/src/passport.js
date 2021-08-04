@@ -8,9 +8,7 @@ const { capture } = require("./sentry");
 const User = require("./models/user");
 
 function getToken(req) {
-  let token = ExtractJwt.fromAuthHeaderWithScheme("JWT")(req);
-  if (!token) token = req.cookies.jwt;
-  return token;
+  return req.cookies.jwt;
 }
 
 module.exports = function (app) {
