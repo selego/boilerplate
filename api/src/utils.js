@@ -2,8 +2,10 @@ const AWS = require("aws-sdk");
 const https = require("https");
 const http = require("http");
 const passwordValidator = require("password-validator");
+const config = require("./config");
 
 const BUCKET_NAME = "datadvise";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 function getReq(url, cb) {
   if (url.toString().indexOf("https") === 0) return https.get(url, cb);
@@ -79,9 +81,27 @@ function validatePassword(password) {
   return schema.validate(password);
 }
 
+const cookieOptions = () => {
+  if (config.ENVIRONMENT === "development") {
+    return { maxAge: COOKIE_MAX_AGE, httpOnly: true, secure: false };
+  } else {
+    return { maxAge: COOKIE_MAX_AGE, httpOnly: true, secure: true, sameSite: "none" };
+  }
+};
+
+const logoutCookieOptions = () => {
+  if (config.ENVIRONMENT === "development") {
+    return { httpOnly: true, secure: false };
+  } else {
+    return { httpOnly: true, secure: true, sameSite: "none" };
+  }
+};
+
 module.exports = {
   uploadToS3FromBuffer,
   uploadToS3FromUrl,
   fileExist,
   validatePassword,
+  cookieOptions,
+  logoutCookieOptions,
 };

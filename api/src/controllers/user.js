@@ -26,7 +26,7 @@ router.post("/signin", (req, res) => UserAuth.signin(req, res));
 router.post("/logout", (req, res) => UserAuth.logout(req, res));
 router.post("/signup", (req, res) => UserAuth.signup(req, res));
 
-router.get("/signin_token", passport.authenticate("user", { session: false }), (req, res) => UserAuth.signinToken(req, res));
+router.get("/me", passport.authenticate("user", { session: false }), (req, res) => UserAuth.me(req, res));
 
 router.post("/forgot_password", async (req, res) => UserAuth.forgotPassword(req, res, `${config.APP_URL}/auth/reset`));
 router.post("/forgot_password_reset", async (req, res) => UserAuth.forgotPasswordReset(req, res));

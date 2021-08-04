@@ -29,10 +29,8 @@ export default () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await api.get("/user/signin_token");
+        const res = await api.get("/user/me");
         if (!res.ok || !res.user) return setLoading(false);
-        if (res.token) api.setToken(res.token);
-
         dispatch(setUser(res.user));
       } catch (e) {
         console.log(e);
